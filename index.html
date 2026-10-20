@@ -4,144 +4,832 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mi catálogo digital</title>
+  <meta name="theme-color" content="#f5f7fc">
+  <meta name="description" content="Biblioteca digital: descubre libros, publicaciones y recursos educativos.">
+  <title>Biblioteca Digital</title>
+
   <style>
+    :root {
+      --azul: #3459d9;
+      --azul-oscuro: #203a9b;
+      --fondo: #f5f7fc;
+      --texto: #1e293b;
+      --suave: #64748b;
+      --borde: #e6eaf2;
+      --blanco: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      max-width: 1000px;
-      margin: auto;
-      padding: 24px;
-      background: #f3f6fc;
-      color: #202938;
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--fondo);
+      color: var(--texto);
+      line-height: 1.6;
     }
 
-    header {
-      text-align: center;
-      padding: 24px;
+    a, button, input, select {
+      font: inherit;
+    }
+
+    .barra {
       background: white;
-      border-radius: 16px;
-      margin-bottom: 24px;
+      border-bottom: 1px solid var(--borde);
     }
 
-    h1 { color: #2457a7; }
+    .barra-interior {
+      max-width: 1180px;
+      margin: auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-    #catalogo {
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 19px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      place-items: center;
+      border-radius: 14px;
+      background: #e9eeff;
+      font-size: 25px;
+    }
+
+    .etiqueta {
+      color: var(--azul);
+      background: #edf1ff;
+      padding: 7px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #203a9b, #4268e9 70%, #718cf6);
+      color: white;
+      padding: 58px 24px 65px;
+    }
+
+    .hero-interior {
+      max-width: 1180px;
+      margin: auto;
+    }
+
+    .sobrelinea {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: .9;
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      max-width: 700px;
+      margin: 15px 0;
+    }
+
+    .hero p {
+      max-width: 620px;
+      font-size: 17px;
+      opacity: .93;
+      margin-bottom: 0;
+    }
+
+    .contenido {
+      max-width: 1180px;
+      margin: auto;
+      padding: 30px 24px 55px;
+    }
+
+    .seccion {
+      margin-bottom: 42px;
+    }
+
+    .encabezado-seccion {
+      margin-bottom: 19px;
+    }
+
+    .encabezado-seccion h2 {
+      font-size: 25px;
+      line-height: 1.3;
+      letter-spacing: -.5px;
+      margin: 0 0 7px;
+    }
+
+    .encabezado-seccion p {
+      color: var(--suave);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* Bibliotecas digitales externas */
+
+    .rejilla-bibliotecas {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
     }
 
-    .tarjeta {
+    .tarjeta-biblioteca {
+      overflow: hidden;
+      min-width: 0;
       background: white;
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px #0001;
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      box-shadow: 0 3px 12px #17255408;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .tarjeta-biblioteca:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 26px #17255412;
+    }
+
+    .imagen-biblioteca {
+      display: block;
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #e9eeff;
+    }
+
+    .contenido-biblioteca {
+      padding: 17px;
+    }
+
+    .contenido-biblioteca h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      line-height: 1.4;
+    }
+
+    .contenido-biblioteca p {
+      color: var(--suave);
+      font-size: 13px;
+      margin: 0 0 15px;
+      min-height: 63px;
+    }
+
+    .enlace-biblioteca {
+      color: var(--azul);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .enlace-biblioteca:hover {
+      text-decoration: underline;
+    }
+
+    /* Buscador y filtros */
+
+    .panel {
+      background: white;
+      border: 1px solid var(--borde);
+      border-radius: 17px;
+      padding: 17px;
+      box-shadow: 0 5px 20px #17255408;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 240px;
+      gap: 12px;
+    }
+
+    .campo {
+      width: 100%;
+      min-width: 0;
+      padding: 13px 15px;
+      border: 1px solid #dce2ee;
+      border-radius: 11px;
+      background: white;
+      color: var(--texto);
+      outline: none;
+    }
+
+    .campo:focus {
+      border-color: var(--azul);
+      box-shadow: 0 0 0 3px #3459d91c;
+    }
+
+    .intro-catalogo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 27px 0 18px;
+    }
+
+    .intro-catalogo h2 {
+      font-size: 25px;
+      letter-spacing: -.5px;
+      margin: 0;
+    }
+
+    #contador {
+      color: var(--suave);
+      font-size: 13px;
+    }
+
+    /* Publicaciones del catálogo propio */
+
+    #catalogo {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .tarjeta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border: 1px solid var(--borde);
+      border-radius: 17px;
+      padding: 22px;
+      box-shadow: 0 3px 12px #17255408;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px #17255412;
+    }
+
+    .icono-documento {
+      width: 51px;
+      height: 51px;
+      display: grid;
+      place-items: center;
+      background: #edf1ff;
+      border-radius: 14px;
+      font-size: 26px;
+      margin-bottom: 17px;
+    }
+
+    .categoria {
+      align-self: flex-start;
+      color: var(--azul-oscuro);
+      background: #edf1ff;
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 12px;
       overflow-wrap: anywhere;
     }
 
-    .tarjeta a { color: #155eef; }
-    #estado { text-align: center; }
+    .tarjeta h3 {
+      font-size: 19px;
+      line-height: 1.4;
+      margin: 0 0 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .descripcion {
+      color: var(--suave);
+      font-size: 14px;
+      margin: 0 0 18px;
+      overflow-wrap: anywhere;
+      white-space: pre-line;
+    }
+
+    .autor {
+      color: #475569;
+      font-size: 13px;
+      margin-top: auto;
+      margin-bottom: 17px;
+      overflow-wrap: anywhere;
+    }
+
+    .boton {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      background: var(--azul);
+      padding: 12px 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background .2s;
+    }
+
+    .boton:hover {
+      background: var(--azul-oscuro);
+    }
+
+    .estado {
+      grid-column: 1 / -1;
+      text-align: center;
+      background: white;
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 38px 20px;
+      color: var(--suave);
+    }
+
+    .estado-icono {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .pie {
+      text-align: center;
+      border-top: 1px solid var(--borde);
+      padding: 26px 20px;
+      color: var(--suave);
+      font-size: 13px;
+      background: white;
+    }
+
+    @media (max-width: 850px) {
+      .rejilla-bibliotecas,
+      #catalogo {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .barra-interior {
+        padding: 13px 16px;
+      }
+
+      .marca {
+        font-size: 16px;
+      }
+
+      .etiqueta {
+        font-size: 9px;
+        padding: 6px 8px;
+      }
+
+      .hero {
+        padding: 43px 20px 49px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .contenido {
+        padding: 25px 15px 38px;
+      }
+
+      .rejilla-bibliotecas,
+      #catalogo {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .imagen-biblioteca {
+        height: 190px;
+      }
+
+      .contenido-biblioteca p {
+        min-height: 0;
+      }
+
+      .panel {
+        grid-template-columns: 1fr;
+        padding: 13px;
+      }
+
+      .intro-catalogo {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .tarjeta {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>📚 Mi catálogo digital</h1>
-    <p>Explora publicaciones y recursos digitales.</p>
+
+  <nav class="barra">
+    <div class="barra-interior">
+      <div class="marca">
+        <div class="logo">📚</div>
+        <span>Biblioteca Digital</span>
+      </div>
+      <span class="etiqueta">ACCESO DIGITAL</span>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-interior">
+      <div class="sobrelinea">Conocimiento para todos</div>
+      <h1>Explora. Aprende. Descubre.</h1>
+      <p>
+        Encuentra libros, publicaciones y recursos educativos.
+        Tu espacio para descubrir nuevos conocimientos.
+      </p>
+    </div>
   </header>
 
-  <p id="estado">Cargando publicaciones...</p>
-  <main id="catalogo"></main>
+  <main class="contenido">
+
+    <!-- BIBLIOTECAS DIGITALES EXTERNAS -->
+
+    <section class="seccion">
+      <div class="encabezado-seccion">
+        <h2>🌎 Explora otras bibliotecas digitales</h2>
+        <p>
+          Descubre libros, investigaciones y colecciones digitales
+          de diferentes lugares del mundo.
+        </p>
+      </div>
+
+      <div class="rejilla-bibliotecas">
+
+        <article class="tarjeta-biblioteca">
+          <a href="https://www.gutenberg.org/"
+             target="_blank" rel="noopener noreferrer">
+            <img class="imagen-biblioteca"
+              src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=700&q=80"
+              alt="Estanterías de una biblioteca"
+              loading="lazy">
+          </a>
+          <div class="contenido-biblioteca">
+            <h3>📚 Project Gutenberg</h3>
+            <p>
+              Miles de libros electrónicos gratuitos,
+              especialmente obras clásicas.
+            </p>
+            <a class="enlace-biblioteca"
+              href="https://www.gutenberg.org/"
+              target="_blank" rel="noopener noreferrer">
+              Explorar libros →
+            </a>
+          </div>
+        </article>
+
+        <article class="tarjeta-biblioteca">
+          <a href="https://www.europeana.eu/"
+             target="_blank" rel="noopener noreferrer">
+            <img class="imagen-biblioteca"
+              src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=700&q=80"
+              alt="Arte y patrimonio cultural"
+              loading="lazy">
+          </a>
+          <div class="contenido-biblioteca">
+            <h3>🖼️ Europeana</h3>
+            <p>
+              Libros, arte, fotografías y patrimonio cultural
+              de instituciones europeas.
+            </p>
+            <a class="enlace-biblioteca"
+              href="https://www.europeana.eu/"
+              target="_blank" rel="noopener noreferrer">
+              Explorar colecciones →
+            </a>
+          </div>
+        </article>
+
+        <article class="tarjeta-biblioteca">
+          <a href="https://scielo.org/"
+             target="_blank" rel="noopener noreferrer">
+            <img class="imagen-biblioteca"
+              src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=700&q=80"
+              alt="Investigación científica"
+              loading="lazy">
+          </a>
+          <div class="contenido-biblioteca">
+            <h3>🔬 SciELO</h3>
+            <p>
+              Revistas científicas y artículos de investigación
+              de América Latina y otras regiones.
+            </p>
+            <a class="enlace-biblioteca"
+              href="https://scielo.org/"
+              target="_blank" rel="noopener noreferrer">
+              Leer investigaciones →
+            </a>
+          </div>
+        </article>
+
+        <article class="tarjeta-biblioteca">
+          <a href="https://doaj.org/"
+             target="_blank" rel="noopener noreferrer">
+            <img class="imagen-biblioteca"
+              src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=700&q=80"
+              alt="Materiales de estudio"
+              loading="lazy">
+          </a>
+          <div class="contenido-biblioteca">
+            <h3>🎓 DOAJ</h3>
+            <p>
+              Directorio de revistas académicas de acceso abierto
+              para estudiar e investigar.
+            </p>
+            <a class="enlace-biblioteca"
+              href="https://doaj.org/"
+              target="_blank" rel="noopener noreferrer">
+              Buscar revistas →
+            </a>
+          </div>
+        </article>
+
+        <article class="tarjeta-biblioteca">
+          <a href="https://archive.org/"
+             target="_blank" rel="noopener noreferrer">
+            <img class="imagen-biblioteca"
+              src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=700&q=80"
+              alt="Libros en una biblioteca"
+              loading="lazy">
+          </a>
+          <div class="contenido-biblioteca">
+            <h3>🗃️ Internet Archive</h3>
+            <p>
+              Libros digitalizados, materiales históricos,
+              grabaciones y otros recursos.
+            </p>
+            <a class="enlace-biblioteca"
+              href="https://archive.org/"
+              target="_blank" rel="noopener noreferrer">
+              Explorar archivo →
+            </a>
+          </div>
+        </article>
+
+        <article class="tarjeta-biblioteca">
+          <a href="https://www.cervantesvirtual.com/"
+             target="_blank" rel="noopener noreferrer">
+            <img class="imagen-biblioteca"
+              src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=700&q=80"
+              alt="Libros para leer"
+              loading="lazy">
+          </a>
+          <div class="contenido-biblioteca">
+            <h3>📖 Biblioteca Virtual Miguel de Cervantes</h3>
+            <p>
+              Literatura, autores y obras de la cultura
+              en español.
+            </p>
+            <a class="enlace-biblioteca"
+              href="https://www.cervantesvirtual.com/"
+              target="_blank" rel="noopener noreferrer">
+              Leer en español →
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- BUSCADOR DEL CATÁLOGO PROPIO -->
+
+    <section class="seccion">
+      <div class="encabezado-seccion">
+        <h2>🔎 Busca publicaciones</h2>
+        <p>
+          Encuentra rápidamente recursos dentro de nuestro propio catálogo.
+        </p>
+      </div>
+
+      <div class="panel">
+        <input
+          class="campo"
+          id="busqueda"
+          type="search"
+          placeholder="Buscar por título, autor o descripción..."
+          aria-label="Buscar publicaciones">
+
+        <select
+          class="campo"
+          id="filtroCategoria"
+          aria-label="Filtrar por categoría">
+          <option value="">Todas las categorías</option>
+        </select>
+      </div>
+
+      <div class="intro-catalogo">
+        <h2>📘 Nuestro catálogo</h2>
+        <span id="contador">Cargando publicaciones...</span>
+      </div>
+
+      <div id="catalogo" aria-live="polite">
+        <div class="estado">
+          <div class="estado-icono">📖</div>
+          Cargando biblioteca digital...
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    Biblioteca Digital · Un espacio para compartir conocimiento 📚
+  </footer>
 
   <script>
+    // Mantén aquí la URL actual de tu aplicación de Apps Script.
     const API_URL = "https://script.google.com/macros/s/AKfycbxgwYhdB4UWoXgVrjvIkA9HRgsBX0ePN7N87JmNFKZJ2vOHYzm2cxbbp-wEpiy3qqMZww/exec";
 
-    function mostrarPublicaciones(publicaciones) {
-      const catalogo = document.getElementById("catalogo");
-      const estado = document.getElementById("estado");
+    let publicaciones = [];
+
+    const catalogo = document.getElementById("catalogo");
+    const estadoContador = document.getElementById("contador");
+    const busqueda = document.getElementById("busqueda");
+    const filtroCategoria = document.getElementById("filtroCategoria");
+
+    function crearElemento(etiqueta, clase, texto) {
+      const elemento = document.createElement(etiqueta);
+
+      if (clase) elemento.className = clase;
+      if (texto !== undefined) elemento.textContent = texto;
+
+      return elemento;
+    }
+
+    function mostrarEstado(icono, mensaje) {
       catalogo.replaceChildren();
 
-      if (!Array.isArray(publicaciones)) {
-        estado.textContent = "No se pudieron leer las publicaciones.";
+      const caja = crearElemento("div", "estado");
+      caja.appendChild(crearElemento("div", "estado-icono", icono));
+      caja.appendChild(document.createTextNode(mensaje));
+
+      catalogo.appendChild(caja);
+    }
+
+    function prepararCategorias() {
+      const categorias = [...new Set(
+        publicaciones
+          .map(p => (p.categoria || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "es"));
+
+      categorias.forEach(categoria => {
+        const opcion = document.createElement("option");
+        opcion.value = categoria;
+        opcion.textContent = categoria;
+        filtroCategoria.appendChild(opcion);
+      });
+    }
+
+    function crearTarjeta(pub) {
+      const tarjeta = crearElemento("article", "tarjeta");
+
+      tarjeta.appendChild(
+        crearElemento("div", "icono-documento", "📄")
+      );
+
+      if (pub.categoria) {
+        tarjeta.appendChild(
+          crearElemento("span", "categoria", pub.categoria)
+        );
+      }
+
+      tarjeta.appendChild(
+        crearElemento("h3", "", pub.titulo || "Publicación sin título")
+      );
+
+      if (pub.descripcion) {
+        tarjeta.appendChild(
+          crearElemento("p", "descripcion", pub.descripcion)
+        );
+      }
+
+      if (pub.autor) {
+        tarjeta.appendChild(
+          crearElemento("p", "autor", "✍️ " + pub.autor)
+        );
+      }
+
+      if (pub.archivo) {
+        try {
+          const url = new URL(pub.archivo);
+
+          if (
+            url.protocol === "https:" &&
+            (
+              url.hostname === "drive.google.com" ||
+              url.hostname === "docs.google.com"
+            )
+          ) {
+            const enlace = crearElemento(
+              "a", "boton", "📖 Abrir publicación"
+            );
+
+            enlace.href = url.href;
+            enlace.target = "_blank";
+            enlace.rel = "noopener noreferrer";
+
+            tarjeta.appendChild(enlace);
+          }
+        } catch (error) {
+          console.warn("Enlace de publicación no válido.");
+        }
+      }
+
+      return tarjeta;
+    }
+
+    function filtrarPublicaciones() {
+      const texto = busqueda.value.trim().toLocaleLowerCase("es");
+      const categoriaElegida = filtroCategoria.value;
+
+      const resultados = publicaciones.filter(pub => {
+        const contenido = [
+          pub.titulo,
+          pub.autor,
+          pub.descripcion,
+          pub.categoria
+        ].join(" ").toLocaleLowerCase("es");
+
+        return contenido.includes(texto) &&
+          (!categoriaElegida || pub.categoria === categoriaElegida);
+      });
+
+      catalogo.replaceChildren();
+
+      estadoContador.textContent =
+        resultados.length +
+        (resultados.length === 1
+          ? " publicación"
+          : " publicaciones");
+
+      if (!resultados.length) {
+        mostrarEstado(
+          "🔍",
+          publicaciones.length
+            ? "No encontramos publicaciones con esos filtros."
+            : "Todavía no hay publicaciones disponibles."
+        );
         return;
       }
 
-      estado.textContent = publicaciones.length
-        ? "Publicaciones disponibles: " + publicaciones.length
-        : "Todavía no hay publicaciones.";
-
-      publicaciones.forEach(pub => {
-        const tarjeta = document.createElement("article");
-        tarjeta.className = "tarjeta";
-
-        const titulo = document.createElement("h2");
-        titulo.textContent = pub.titulo || "Sin título";
-        tarjeta.appendChild(titulo);
-
-        if (pub.categoria) {
-          const categoria = document.createElement("p");
-          categoria.textContent = "Categoría: " + pub.categoria;
-          tarjeta.appendChild(categoria);
-        }
-
-        if (pub.autor) {
-          const autor = document.createElement("p");
-          autor.textContent = "Autor: " + pub.autor;
-          tarjeta.appendChild(autor);
-        }
-
-        if (pub.descripcion) {
-          const descripcion = document.createElement("p");
-          descripcion.textContent = pub.descripcion;
-          tarjeta.appendChild(descripcion);
-        }
-
-        if (pub.archivo) {
-          try {
-            const url = new URL(pub.archivo);
-            if (url.protocol === "https:" &&
-                (url.hostname === "drive.google.com" ||
-                 url.hostname === "docs.google.com")) {
-              const enlace = document.createElement("a");
-              enlace.href = url.href;
-              enlace.target = "_blank";
-              enlace.rel = "noopener noreferrer";
-              enlace.textContent = "📖 Abrir publicación";
-              tarjeta.appendChild(enlace);
-            } else {
-              tarjeta.append("El enlace del archivo no es válido.");
-            }
-          } catch {
-            tarjeta.append("El enlace del archivo no es válido.");
-          }
-        }
-
-        catalogo.appendChild(tarjeta);
+      resultados.forEach(pub => {
+        catalogo.appendChild(crearTarjeta(pub));
       });
     }
 
     function cargarCatalogo() {
-      const estado = document.getElementById("estado");
-      const script = document.createElement("script");
       const callback = "catalogoCallback";
+      const script = document.createElement("script");
+      let finalizado = false;
 
-      window[callback] = function(datos) {
-        mostrarPublicaciones(datos);
+      function limpiar() {
+        finalizado = true;
         delete window[callback];
         script.remove();
+      }
+
+      window[callback] = function(datos) {
+        if (finalizado) return;
+
+        if (!Array.isArray(datos)) {
+          limpiar();
+          estadoContador.textContent = "No se pudieron leer los datos.";
+          mostrarEstado("⚠️", "La respuesta del catálogo no es válida.");
+          return;
+        }
+
+        publicaciones = datos;
+        prepararCategorias();
+        filtrarPublicaciones();
+        limpiar();
       };
 
       script.onerror = function() {
-        estado.textContent =
-          "No se pudo conectar. Comprueba la URL y la implementación.";
-        delete window[callback];
-        script.remove();
+        if (finalizado) return;
+
+        limpiar();
+        estadoContador.textContent = "Error de conexión";
+
+        mostrarEstado(
+          "⚠️",
+          "No se pudo conectar con el catálogo. Intenta recargar la página."
+        );
       };
 
       script.src = API_URL + "?callback=" + callback;
       document.body.appendChild(script);
     }
 
+    busqueda.addEventListener("input", filtrarPublicaciones);
+    filtroCategoria.addEventListener("change", filtrarPublicaciones);
+
     cargarCatalogo();
   </script>
+
 </body>
 </html>
