@@ -8,36 +8,140 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+      padding: 24px;
       background: #f3f6fc;
       color: #202938;
     }
+
     header {
       text-align: center;
-      padding: 25px;
+      padding: 24px;
       background: white;
-      border-radius: 15px;
+      border-radius: 16px;
+      margin-bottom: 24px;
     }
+
     h1 { color: #2457a7; }
-    .mensaje {
-      margin-top: 20px;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
+
+    #catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
     }
+
+    .tarjeta {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #0001;
+      overflow-wrap: anywhere;
+    }
+
+    .tarjeta a { color: #155eef; }
+    #estado { text-align: center; }
   </style>
 </head>
 <body>
   <header>
     <h1>📚 Mi catálogo digital</h1>
-    <p>Encuentra publicaciones y recursos digitales.</p>
+    <p>Explora publicaciones y recursos digitales.</p>
   </header>
 
-  <section class="mensaje">
-    <h2>¡Bienvenido!</h2>
-    <p>Mi catálogo digital estará disponible aquí muy pronto.</p>
-  </section>
+  <p id="estado">Cargando publicaciones...</p>
+  <main id="catalogo"></main>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbx6BKAeKNDGXzP9EqR8ukL0HeI_IixcclfkAg-GLRgp6NX8_8oetn7RNRJzpYGG9B9eIA/exec";
+
+    function mostrarPublicaciones(publicaciones) {
+      const catalogo = document.getElementById("catalogo");
+      const estado = document.getElementById("estado");
+      catalogo.replaceChildren();
+
+      if (!Array.isArray(publicaciones)) {
+        estado.textContent = "No se pudieron leer las publicaciones.";
+        return;
+      }
+
+      estado.textContent = publicaciones.length
+        ? "Publicaciones disponibles: " + publicaciones.length
+        : "Todavía no hay publicaciones.";
+
+      publicaciones.forEach(pub => {
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta";
+
+        const titulo = document.createElement("h2");
+        titulo.textContent = pub.titulo || "Sin título";
+        tarjeta.appendChild(titulo);
+
+        if (pub.categoria) {
+          const categoria = document.createElement("p");
+          categoria.textContent = "Categoría: " + pub.categoria;
+          tarjeta.appendChild(categoria);
+        }
+
+        if (pub.autor) {
+          const autor = document.createElement("p");
+          autor.textContent = "Autor: " + pub.autor;
+          tarjeta.appendChild(autor);
+        }
+
+        if (pub.descripcion) {
+          const descripcion = document.createElement("p");
+          descripcion.textContent = pub.descripcion;
+          tarjeta.appendChild(descripcion);
+        }
+
+        if (pub.archivo) {
+          try {
+            const url = new URL(pub.archivo);
+            if (url.protocol === "https:" &&
+                (url.hostname === "drive.google.com" ||
+                 url.hostname === "docs.google.com")) {
+              const enlace = document.createElement("a");
+              enlace.href = url.href;
+              enlace.target = "_blank";
+              enlace.rel = "noopener noreferrer";
+              enlace.textContent = "📖 Abrir publicación";
+              tarjeta.appendChild(enlace);
+            } else {
+              tarjeta.append("El enlace del archivo no es válido.");
+            }
+          } catch {
+            tarjeta.append("El enlace del archivo no es válido.");
+          }
+        }
+
+        catalogo.appendChild(tarjeta);
+      });
+    }
+
+    function cargarCatalogo() {
+      const estado = document.getElementById("estado");
+      const script = document.createElement("script");
+      const callback = "catalogoCallback";
+
+      window[callback] = function(datos) {
+        mostrarPublicaciones(datos);
+        delete window[callback];
+        script.remove();
+      };
+
+      script.onerror = function() {
+        estado.textContent =
+          "No se pudo conectar. Comprueba la URL y la implementación.";
+        delete window[callback];
+        script.remove();
+      };
+
+      script.src = API_URL + "?callback=" + callback;
+      document.body.appendChild(script);
+    }
+
+    cargarCatalogo();
+  </script>
 </body>
 </html>
